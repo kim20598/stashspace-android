@@ -22,7 +22,8 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3.0.0
       with:
-        packages: 'build-tools;35.0.0,platforms;android-35,platform-tools'
+        build-tools-version: 35.0.0
+        api-level: 35
         accept-android-sdk-licenses: true
 
     - name: Build APK
