@@ -30,8 +30,8 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       with:
-        cmdline-tools-version: 11096708
-        packages: '35.0.0,android-35,platform-tools'
+        build-tools-version: 35.0.0
+        api-level: 35
         accept-android-sdk-licenses: true
 
     - name: Make gradlew executable
