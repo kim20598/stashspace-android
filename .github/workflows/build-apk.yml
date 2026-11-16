@@ -2,15 +2,8 @@ name: Build Stashspace APK
 
 on:
   push:
-    branches: [ main, master, 'build-*' ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'App version code'
-        required: false
-        default: '1'
 
 jobs:
   build:
@@ -25,41 +18,19 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: nttld/setup-action@v3
       with:
-        sdk-version: 35
+        api-level: 35
+        build-tools-version: 35.0.0
         ndk-version: 26.1.10909125
-        packages: 'build-tools;35.0.0,platforms;android-35,platform-tools,sources;android-35'
-        accept-android-sdk-licenses: true
-
-    - name: Make gradlew executable
-      run: chmod +x gradlew
 
     - name: Build APK
       run: ./gradlew assembleDebug -x test
-
-    - name: Extract APK info
-      id: apk-info
-      run: |
-        APK_PATH=app/build/outputs/apk/debug/app-debug.apk
-        if [ -f "$APK_PATH" ]; then
-          APK_SIZE=$(stat -f%z "$APK_PATH" 2>/dev/null || stat -c%s "$APK_PATH")
-          echo "size=$APK_SIZE" >> $GITHUB_OUTPUT
-          echo "path=$APK_PATH" >> $GITHUB_OUTPUT
-        fi
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: stashspace-debug-apk
         path: app/build/outputs/apk/debug/
-        
-    - name: Upload Release APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: stashspace-${{ github.sha }}-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 30
