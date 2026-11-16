@@ -28,10 +28,10 @@ jobs:
         cache: gradle
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v2
       with:
-        build-tools-version: 35.0.0
         api-level: 35
+        build-tools-version: 35.0.0
         accept-android-sdk-licenses: true
 
     - name: Make gradlew executable
