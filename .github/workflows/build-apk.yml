@@ -28,10 +28,12 @@ jobs:
         cache: gradle
 
     - name: Setup Android SDK
-      uses: reactivecircus/android-build@v2
+      uses: android-actions/setup-android@v3
       with:
-        api-level: 35
-        build-tools: 35.0.0
+        sdk-version: 35
+        ndk-version: 26.1.10909125
+        packages: 'build-tools;35.0.0,platforms;android-35,platform-tools,sources;android-35'
+        accept-android-sdk-licenses: true
 
     - name: Make gradlew executable
       run: chmod +x gradlew
