@@ -18,13 +18,25 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: 'gradle'
 
     - name: Setup Android SDK
-      uses: nttld/setup-action@v3
-      with:
-        api-level: 35
-        build-tools-version: 35.0.0
-        ndk-version: 26.1.10909125
+      run: |
+        mkdir -p $ANDROID_HOME/cmdline-tools
+        cd $ANDROID_HOME/cmdline-tools
+        curl -sSL "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -o tools.zip
+        unzip -q tools.zip
+        mkdir -p latest
+        mv bin latest/
+        mv lib latest/
+        mv N lib64/ 2>/dev/null || mv lib64/lib 64bit/ 2>/dev/null || true
+        mv lib lib64/ 2>/dev/null || true
+        mv NOTICE* NOTICE.txt 2>/dev/null || true
+        mv LICENSE* LICENSE.txt 2>/dev/null || true
+        mv source.properties 2>/dev/null || true
+        mv NOTICE.txt 2>/dev/null || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "build-tools;35.0.0" "platforms;android-35" "platform-tools" --sdk_root=$ANDROID_HOME
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
 
     - name: Build APK
       run: ./gradlew assembleDebug -x test
